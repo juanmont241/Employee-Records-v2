@@ -21,6 +21,18 @@ namespace EmployeeRecords
 
         private void addButton_Click(object sender, EventArgs e)
         { 
+            //Gets all of the user's inputs
+            string id = idInput.Text;
+            string firstName = fnInput.Text;
+            string lastName = fnInput.Text; 
+            string date = dateInput.Text;
+            string salary = salaryInput.Text;
+
+            //Creates an empoyee object with the input values
+            Employee employee = new Employee(id, firstName, lastName, date, salary);
+            employeeDB.Add(employee);
+
+
             ClearLabels();
         }
 
@@ -31,7 +43,12 @@ namespace EmployeeRecords
 
         private void listButton_Click(object sender, EventArgs e)
         {
+            outputLabel.Text = "";
 
+            foreach(Employee emp in employeeDB)
+            {
+                outputLabel.Text += $"{emp.id} {emp.firstName} {emp.lastName} {emp.date} {emp.salary}\n";
+            }
         }
 
         private void ClearLabels()
@@ -45,7 +62,7 @@ namespace EmployeeRecords
 
         private void mainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            saveDB();
         }
 
         public void loadDB()
@@ -55,7 +72,26 @@ namespace EmployeeRecords
 
         public void saveDB()
         {
+            XmlWriter writer = XmlWriter.Create("Resources/employeeData.xml", null);
 
+            writer.WriteStartElement("Employees");
+
+            foreach (Employee emp in employeeDB)
+            {
+                writer.WriteStartElement("Employee");
+
+                writer.WriteElementString("id", emp.id);
+                writer.WriteElementString("firstName", emp.firstName);
+                writer.WriteElementString("lastName", emp.lastName);
+                writer.WriteElementString("date", emp.date);
+                writer.WriteElementString("salary", emp.salary);
+
+
+                writer.WriteEndElement();
+            }
+
+                writer.WriteEndElement();
+                writer.Close();
         }
     }
 }

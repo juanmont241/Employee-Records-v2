@@ -17,6 +17,7 @@ namespace EmployeeRecords
         public mainForm()
         {
             InitializeComponent();
+            loadDB();
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -67,7 +68,32 @@ namespace EmployeeRecords
 
         public void loadDB()
         {
-            
+            XmlReader reader = XmlReader.Create("Resources/employeeData.xml");
+
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Text)
+                {
+                    string id = reader.ReadString();
+
+                    reader.ReadToNextSibling("firstName");
+                    string firstName = reader.ReadString();
+
+                    reader.ReadToNextSibling("lastName");
+                    string lastName = reader.ReadString();
+
+                    reader.ReadToNextSibling("date");
+                    string date = reader.ReadString();
+
+                    reader.ReadToNextSibling("salary");
+                    string salary = reader.ReadString();
+
+                    Employee employee = new Employee(id, firstName, lastName, date, salary);
+                    employeeDB.Add(employee);
+                }
+            }
+
+            reader.Close();
         }
 
         public void saveDB()
